@@ -6,6 +6,7 @@ module.exports = {
     return queryInterface.bulkInsert('Students',[{
       "name": "Admin Student",
       "UserId": 2,
+      "password": "$2a$15$l2ZjCi7LP2jo3rLVS/ufk.9uXyB5BgR2WjJt2DkUBWLvwDaZzerMO",
       "createdAt": new Date(),
       "updatedAt": new Date()
     }, {
