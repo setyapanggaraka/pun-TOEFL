@@ -20,7 +20,7 @@ module.exports = {
     el.createdAt = el.updatedAt = new Date()
     return el
    })
-  //  return queryInterface.bulkInsert('Courses', insertCourse, {});
+   return queryInterface.bulkInsert('Courses', insertCourse, {});
   },
 
   async down (queryInterface, Sequelize) {
@@ -30,6 +30,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    //  return queryInterface.bulkDelete('Courses', insertCourse, {});
+     return queryInterface.bulkDelete('Courses', insertCourse, {});
   }
 };

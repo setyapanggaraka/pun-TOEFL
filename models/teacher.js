@@ -15,7 +15,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Teacher.init({
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Name must be filled'
+        },
+        notEmpty:{
+          msg: 'Name must be filled'
+        }
+      }
+    },
     UserId: DataTypes.INTEGER
   }, {
     sequelize,

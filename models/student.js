@@ -15,12 +15,27 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Student.init({
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Name must be filled'
+        },
+        notEmpty:{
+          msg: 'Name must be filled'
+        }
+      }
+    },
     wallet: DataTypes.STRING,
     UserId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Student',
+  });
+
+  Student.beforeCreate((student,options)=>{
+    student.wallet = 0;
   });
   return Student;
 };

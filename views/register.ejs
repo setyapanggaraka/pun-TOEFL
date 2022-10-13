@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pun-TOEFL</title>
+</head>
+<body>
+    <center>
+        <h1>Registration</h1>
+    </center>
+    <% if (msg) { %>
+        <% msg.forEach(e => { %>
+         <a style="color: red;"><%= e %></a></br>
+        <% }) %>
+    <% } %>
+    <br>
+    <form action="/register" method="post">
+        <div>
+            <label for="role">Register as:</label>
+            <select name="RoleId" id="role">
+                <option value="" disabled selected>-- Register Role --</option>
+                <% roles.forEach(role => { %>
+                    <option value="<%= role.id %>"><%= role.name %></option>
+                <% }) %>
+            </select>
+        </div><br>
+        <div>
+            <label for="name">Name</label> <br>
+            <input type="text" id="name" name="name" placeholder="Insert Name Here">
+        </div><br>
+        <div>
+            <label for="email">Email Address</label> <br>
+            <input type="text" id="email" name="email" placeholder="Insert Email Address">
+        </div><br>
+        <div>
+            <label for="password">Passsword</label> <br>
+            <input type="password" id="password" name="password" placeholder="Insert your passsword">
+        </div><br>
+        <input type="submit" value="Register">
+    </form>
+</body>
+</html>

@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const byrcrypt = require('bcryptjs');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -15,12 +16,54 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    RoleId: DataTypes.INTEGER
+    email: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        isEmail:{
+          msg: 'Invalid email address'
+        },
+        notEmpty:{
+          msg: 'Email must be filled'
+        },
+        notEmpty:{
+          msg: 'Email must be filled'
+        }
+      }
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Password must be filled'
+        },
+        notEmpty:{
+          msg: 'Password must be filled'
+        }
+      }
+    },
+    RoleId: {
+      type: DataTypes.INTEGER,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Please Choose your role'
+        },
+        notEmpty:{
+          msg: 'Please Choose your role'
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'User',
   });
+
+  User.beforeCreate((user,options)=>{
+    const salt = byrcrypt.genSaltSync(15);
+    const hash = byrcrypt.hashSync(user.password,salt);
+    user.password = hash;
+  })
   return User;
 };
