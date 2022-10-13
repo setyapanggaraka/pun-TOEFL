@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <h2>Login Page</h2>
+    <div>
+        <% if (msg) { %>
+            <h2>Akun anda berhasil dibuat</h2>
+        <% } %>
+        <% if (err) { %>
+            <a style="color: red;"><%= err %></a></br>
+        <% } %>
+    </div>
+    <br>
+
+    <a>Please Insert Login Credential Below !</a><br>
+    
+    <form action="/login" method="post" >
+        <div>
+            <label for="email">Email Address</label> <br>
+            <input type="email" id="email" name="email" placeholder="Insert your Email here">
+        </div>
+        <br>
+        <div>
+            <label for="email">Password</label> <br>
+            <input type="password" id="password" name="password" placeholder="Insert your Password">
+        </div>
+        <br>
+        <div>
+            <label for="role">Login As :</label><br>
+            <input type="radio" id="role" name="RoleId" value="1"> Teacher
+            <input type="radio" id="role" name="RoleId" value="2"> Student
+        </div>
+        <br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>

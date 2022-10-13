@@ -11,14 +11,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // Teacher.belongsToMany(models.Student,{through:models.Category});
-      // Teacher.hasMany(models.Student)
-      Teacher.hasMany(models.Course)
+      Teacher.hasMany(models.Course);
+      Teacher.belongsTo(models.User);
     }
   }
   Teacher.init({
-    name: DataTypes.STRING,
-    StudentId: DataTypes.INTEGER
+    name: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Name must be filled'
+        },
+        notEmpty:{
+          msg: 'Name must be filled'
+        }
+      }
+    },
+    UserId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Teacher',

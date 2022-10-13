@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const convertToCurrency = require('../helper/currency');
 module.exports = (sequelize, DataTypes) => {
   class Student extends Model {
     /**
@@ -11,19 +12,36 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // Student.belongsToMany(models.Teacher,{through:models.Category});
-      // Student.belongsTo(models.Teacher);
-      Student.hasMany(models.Course)
+      Student.hasMany(models.Course);
+      Student.belongsTo(models.User);
+    }
+    
+    getWallet(){
+      return convertToCurrency(this.wallet);
     }
   }
   Student.init({
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Name must be filled'
+        },
+        notEmpty:{
+          msg: 'Name must be filled'
+        }
+      }
+    },
     wallet: DataTypes.STRING,
     UserId: DataTypes.INTEGER
-    // TeacherId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Student',
+  });
+
+  Student.beforeCreate((student,options)=>{
+    student.wallet = 1000000;
   });
   return Student;
 };

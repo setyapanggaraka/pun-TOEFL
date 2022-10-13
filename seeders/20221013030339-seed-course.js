@@ -14,12 +14,13 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-   const categoryData = JSON.parse(fs.readFileSync('./data/categories.json', 'utf-8'))
-   const insertCategory = categoryData.map(el => {
+   const dataCourse = JSON.parse(fs.readFileSync('./data/courses.json', 'utf-8'))
+   const insertCourse = dataCourse.map(el => {
+    delete el.id
     el.createdAt = el.updatedAt = new Date()
     return el
    })
-  //  return queryInterface.bulkInsert('Categories', insertCategory, {});
+   return queryInterface.bulkInsert('Courses', insertCourse, {});
   },
 
   async down (queryInterface, Sequelize) {
@@ -29,6 +30,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    //  return queryInterface.bulkDelete('Categories', insertCategory, {});
+    //  return queryInterface.bulkDelete('Courses', insertCourse, {});
   }
 };

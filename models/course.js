@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+const convertToCurrency = require('../helper/currency');
+const estimatedTime = require('../helper/estimatedTime');
+const formattedDate = require('../helper/time');
 module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
     /**
@@ -15,13 +18,60 @@ module.exports = (sequelize, DataTypes) => {
       Course.belongsTo(models.Student);
       Course.belongsTo(models.Teacher);
     }
+    
+    getEstimatedTime(){
+      return estimatedTime(this.duration);
+    }
+
+    getFormattedDate(){
+      return formattedDate(this.createdAt);
+    }
+
+    getCurrency(){
+      return convertToCurrency(this.price);
+    }
   }
   Course.init({
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    duration: DataTypes.INTEGER,
+    name: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Course name must be filled'
+        },
+        notEmpty:{
+          msg: 'Course name must be filled'
+        }
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Description must be filled'
+        },
+        notEmpty:{
+          msg: 'Description must be filled'
+        }
+      }
+    },
+      duration: {
+        type: DataTypes.STRING,
+        allowNull:false,
+        validate:{
+          notNull:{
+            msg: 'Duration must be filled'
+          },
+          notEmpty:{
+            msg: 'Duration must be filled'
+          },
+        }
+      }
+    ,
     price: DataTypes.INTEGER,
     filePath: DataTypes.STRING,
+    createdAt: DataTypes.DATE,
     CategoryId: DataTypes.INTEGER,
     StudentId: DataTypes.INTEGER,
     TeacherId: DataTypes.INTEGER
@@ -29,5 +79,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Course',
   });
+  
+  Course.beforeCreate((course,option)=>{
+    course.createdAt = new Date();
+  })
   return Course;
 };

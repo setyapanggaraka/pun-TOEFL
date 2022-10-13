@@ -7,8 +7,16 @@
     <title>Display All Courses</title>
 </head>
 <body>
+    <%- include('./partials/navbar', {session:session}) %> 
     <h1>Select course you want</h1>
-    <a href="/create_course">Add Course</a>
+    <% if (money) { %>
+        <h4>Your money: <%= money %></h4>
+    <% } %>
+    <% if (session.role == '1') { %>
+        <a href="/create_course">Add Course</a>
+    <% } else if (session.role == '2') { %>
+        <a href="/myCourse">My Course</a>
+    <% } %>
     <form action="" method="get" style="margin: 10px 0">
         <input type="text" placeholder="search" name="search">
         <input type="submit" value="Search">
@@ -28,19 +36,18 @@
                 <tr>
                     <td><%= el.name %></td>
                     <td><%= el.description %></td>
-                    <td><%= el.duration %></td>
-                    <td><%= el.price %></td>
+                    <td><%= el.getEstimatedTime() %></td>
+                    <td><%= el.getCurrency() %></td>
                     <td><%= el.filePath %></td>
                     <td>
-                        <a href="">Buy</a>
                         <a href="/course/<%= el.id %>">Read Detail</a>
-                        <a href="/course/<%= el.id %>/delete">Delete Course</a>
+                        <% if (session.role == '1') { %>
+                            <a href="/course/<%= el.id %>/delete">Delete Course</a>
+                        <% } %>
                     </td>
                 </tr>
             <% }) %>
         </tbody>
     </table>
-    <h4>Your money: Rp. 150.000</h4>
-    <!-- <embed src="https://repository.dinus.ac.id/docs/bkd/Modul-Basic_English_Grammar.pdf" width="800px" height="2100px" /> -->
 </body>
 </html>

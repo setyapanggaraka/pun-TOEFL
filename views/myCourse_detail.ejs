@@ -4,22 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Course</title>
+    <title>Document</title>
 </head>
 <body>
+    <%- include('./partials/navbar', {session:session}) %> 
     <div>
         <h1><%= course.name %></h1>
         <h2>By : <%= course.Teacher.name %> - <%= course.Category.name %></h2>
         <a>Estimated Time : <%= course.getEstimatedTime() %></a>
         <br>
         <a><%= course.description %></a>
-        <% if (session.role == 1) { %>
-            <a href="/course/<%= course.id %>/edit">Edit</a>
-        <% } else if (session.role == 2) { %>
-            <form action="/course/<%= course.id %>/buy" method="post">
-                <input type="submit" value="Buy">
-            </form>
-        <% } %>
     </div>
     <div>
         <p>
