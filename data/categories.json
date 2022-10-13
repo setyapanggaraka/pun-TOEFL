@@ -1,0 +1,46 @@
+[
+    {
+        "name": "Noun",
+        "description": "A noun is a word (other than a pronoun) used to identify any of a class of people, places, or things ( common noun ), or to name a particular one of these ( proper noun )."
+    },
+    {
+        "name": "Pronouns",
+        "description": "A pronoun is a word that is used instead of a noun or noun phrase."
+    },
+    {
+        "name":"Verb",
+        "description":"A verb is a word used to describe an action, state, or occurrence, and forming the main part of the predicate of a sentence, such as hear, become, happen."
+    },
+    {
+        "name":"Tenses",
+        "description":"A verb-based method used to indicate the time, and sometimes the continuation or completeness, of an action or state in relation to the time of speaking"
+    },
+    {
+        "name":"Adjective",
+        "description":"An adjective is a word that modifies a noun or a pronoun."
+    },
+    {
+        "name":"Adverb",
+        "description":"An adverb is a word or an expression that generally modifies a verb, adjective, another adverb, determiner, clause, preposition, or sentence."
+    },
+    {
+        "name":"Antonym/ Synonim",
+        "description":"Synonyms are words that have the same, or almost the same, meaning as another word. Antonyms are words that have the opposite meaning of another word."
+    },
+    {
+        "name":"Active and Passive Voice",
+        "description":"In the active voice, the sentence's subject performs the action on the action's target. In the passive voice, the target of the action is the main focus, and the verb acts upon the subject."
+    },
+    {
+        "name":"Gerund",
+        "description":"a verb in its present participle form (root verb + “ing”) that acts as a noun in a sentence"
+    },
+    {
+        "name":"Idiom",
+        "description":"a group of words established by usage as having a meaning not deducible from those of the individual words"
+    },
+    {
+        "name":"TOEFL",
+        "description":"The TOEFL (Test of English as a Foreign Language) is a standardized academic English test primarily taken by students applying to universities in the United States."
+    }
+]
