@@ -32,9 +32,43 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Course.init({
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    duration: DataTypes.INTEGER,
+    name: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Course name must be filled'
+        },
+        notEmpty:{
+          msg: 'Course name must be filled'
+        }
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        notNull:{
+          msg: 'Description must be filled'
+        },
+        notEmpty:{
+          msg: 'Description must be filled'
+        }
+      }
+    },
+      duration: {
+        type: DataTypes.STRING,
+        allowNull:false,
+        validate:{
+          notNull:{
+            msg: 'Duration must be filled'
+          },
+          notEmpty:{
+            msg: 'Duration must be filled'
+          },
+        }
+      }
+    ,
     price: DataTypes.INTEGER,
     filePath: DataTypes.STRING,
     createdAt: DataTypes.DATE,
@@ -45,5 +79,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Course',
   });
+  
+  Course.beforeCreate((course,option)=>{
+    course.createdAt = new Date();
+  })
   return Course;
 };

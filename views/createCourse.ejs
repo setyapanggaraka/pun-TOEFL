@@ -8,6 +8,13 @@
 </head>
 <body>
     <h1>Add New Course</h1>
+
+    <% if (msg) { %>
+        <% msg.forEach(e => { %>
+         <a style="color: red;"><%= e %></a></br>
+        <% }) %>
+    <% } %>
+
     <form action="/create_course" method="post">
         <div>
             <label for="">Name Course</label> <br>
@@ -18,7 +25,7 @@
             <input type="text" name="descriptionCourse">
         </div><br>
         <div>
-            <label for="">Duration</label><br>
+            <label for="">Duration ( Minutes )</label><br>
             <input type="number" name="durationCourse">
         </div><br>
         <div>
@@ -38,10 +45,6 @@
                     <option value="<%= el.id %>"><%= el.name %></option>
                 <% }) %>
             </select>
-        </div><br>
-        <div>
-            <label for="">Teacher Id</label><br>
-            <input type="number" name="TeacherId" id="">
         </div><br>
         <a href="/upload">Add file</a>
         <input type="submit" value="Submit">

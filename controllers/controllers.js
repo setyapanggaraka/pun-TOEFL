@@ -3,6 +3,7 @@ const {Op} = require('sequelize');
 const student = require('../models/student');
 const bcrypt = require('bcryptjs');
 const convertToCurrency = require('../helper/currency');
+const e = require('express');
 
 class Controller {
     static landingPage(req, res){
@@ -112,7 +113,6 @@ class Controller {
             req.session.roleName = globaluser.Role.name
             req.session.role = RoleId
             req.session.name = role.name;
-            console.log(req.session)
             return res.redirect('/home');
           }else{
             const msg = "Username / Password is Invalid"
@@ -124,7 +124,6 @@ class Controller {
         }
       })
       .catch(err => {
-        console.log(err);
         res.send(err)
       });
     }
@@ -133,17 +132,25 @@ class Controller {
       const { search } = req.query
       const session = req.session
       const options = {
-        where: {}
-      }
-      if (search){
-        options.where = {
-          name : {
-              [Op.iLike]: `%${search}%` 
+        where: {
+          StudentId:{
+            [Op.ne]: session.userId
           }
         }
       }
+      if (search){
+        options.where.name = {
+              [Op.iLike]: `%${search}%` 
+          }
+      }
       let promiseUser, wallet;
-      if(session.role == 2){
+      if(session.role == 1){
+        promiseUser = Teacher.findOne({
+          where:{
+            UserId:session.userId
+          }
+        })
+      }else if(session.role == 2){
         promiseUser = Student.findOne({
           where:{
             UserId:session.userId
@@ -155,7 +162,10 @@ class Controller {
         return Course.findAll(options)
       })
       .then(courses => {
-        let money = convertToCurrency(wallet);
+        let money;
+        if(wallet){
+          money = convertToCurrency(wallet);
+        }
         res.render('home', {courses,session,money});
       })
       .catch(err => {
@@ -165,18 +175,68 @@ class Controller {
 
     static selectCourse(req, res){
       Course.findByPk(+req.params.courseId, {
-        include: Category 
+        include: [
+          {
+            model: Category,
+            attributes: ['name']
+          },{
+            model: Teacher,
+            attributes: ['name']
+          }
+        ]
       })
       .then(course => {
-        res.render('selectCourse', {course})
+        res.render('selectCourse', {course,session:req.session})
       })
       .catch(err => {
         res.send(err)
       })
     }
 
-    static buyCourse(){
-
+    static buyCourse(req,res){
+      let studentWallet;
+      const {courseId} = req.params
+      Student.findOne({
+        where:{
+          UserId:req.session.userId
+        }
+      })
+      .then(student =>{
+        studentWallet = student.wallet 
+        return Course.findByPk(courseId)
+      })
+      .then(course =>{
+        let coursePrice = course.price
+        let remaining;
+        console.log(coursePrice, +studentWallet)
+        if(coursePrice > +studentWallet){
+          throw new Error("Uang Kurang")
+        }else{
+          remaining = studentWallet - coursePrice
+        }
+        return Student.update({
+          wallet:remaining
+        },{where:{
+            UserId:req.session.userId
+          }
+        })
+      })
+      .then(result=>{
+        return Course.update({
+          StudentId:req.session.userId
+        },{
+          where: {
+            id: courseId
+          }
+        })
+      })  
+      .then(result =>{
+        res.redirect('/myCourse')
+      })
+      .catch(err=>{
+        console.log(err);
+        res.send(err)
+      })
     }
 
     static getMyCourse(req,res){
@@ -215,7 +275,6 @@ class Controller {
         include: [Category,Teacher] 
       })
       .then(course => {
-        // res.send(course);
         res.render('myCourse_detail', {course,session:req.session})
       })
       .catch(err => {
@@ -224,11 +283,16 @@ class Controller {
     }
 
     static addCourse(req, res){
+      const {err} = req.query
+      let msg;
+      if(err){
+        msg = err.split(";");
+      }
       Category.findAll({
-       attributes: ['id','name','description']
+      attributes: ['id','name','description']
       })
       .then(categories => {
-        res.render('createCourse', {categories})
+        res.render('createCourse', {categories,msg:msg})
       })
       .catch(err => {
         res.send(err)
@@ -236,24 +300,28 @@ class Controller {
     }
 
     static createCourse(req, res){
-      Student.findByPk(req.body.TeacherId)
-      .then(StudentId => {
-        const { nameCourse, descriptionCourse, durationCourse, priceCourse, filename, CategoryId } = req.body
-        return Course.create({
-          name: nameCourse,
-          description: descriptionCourse,
-          duration: durationCourse,
-          price: priceCourse, 
-          filePath: filename,
-          StudentId: StudentId.id,
-          CategoryId: CategoryId,
-        })
+      const {nameCourse, descriptionCourse, durationCourse, priceCourse, filename, CategoryId } = req.body
+      Course.create({
+        name: nameCourse,
+        description: descriptionCourse,
+        duration: durationCourse,
+        price: priceCourse, 
+        filePath: filename,
+        TeacherId: req.session.userId,
+        CategoryId: CategoryId,
       })
       .then(() => {
         res.redirect('/home')
       })
       .catch(err => {
-        res.send(err)
+        if(err.name == 'SequelizeValidationError'){
+          let msg = err.errors.map(error => {
+            return error.message
+          }).join(';');
+          res.redirect(`/create_course?err=${msg}`);
+        }else{
+          res.send(err);
+        }
       })
     }
 
@@ -266,9 +334,14 @@ class Controller {
         }
       })
     }
+
     static updateCourse(req, res){
+      const {err} = req.query
+      let msg;
+      if(err){
+        msg = err.split(";");
+      }
       let globalCourse;
-      
       Course.findByPk(req.params.courseId, {
         include: Category
       })
@@ -277,44 +350,41 @@ class Controller {
         return Category.findAll()
       })
       .then(categories => {
-        // console.log(globalCourse.Category)
-        res.render('updateCourse', {categories, course: globalCourse})
+        res.render('updateCourse', {categories, course: globalCourse, msg:msg})
       })
       .catch(err => {
-        res.send(err)
-      })
-    } 
-    static createUpdateCourse(req, res){
-      // console.log(req.params)
-      Student.findByPk(req.body.TeacherId)
-      .then(StudentId => {
-        // res.send(req.body)
-        // console.log(StudentId)
-        const { nameCourse, descriptionCourse, durationCourse, priceCourse, filename, CategoryId } = req.body
-        // return Course.findAll()
-        return Course.update({
-          name: nameCourse,
-          description: descriptionCourse,
-          duration: durationCourse,
-          price: priceCourse, 
-          filePath: filename,
-          StudentId: StudentId.id,
-          CategoryId: CategoryId
-        },{
-          where: {
-            id: +req.params.courseId
-          }
-        })
-      })
-      .then(result => {
-        res.send(result)
-        // res.redirect('/home')
-      })
-      .catch(err => {
-        console.log(err)
         res.send(err)
       })
     }
+
+    static createUpdateCourse(req, res){
+      const { nameCourse, descriptionCourse, durationCourse, priceCourse, filename, CategoryId } = req.body
+      Course.update({
+        name: nameCourse,
+        description: descriptionCourse,
+        duration: durationCourse,
+        price: priceCourse, 
+        filePath: filename,
+        CategoryId: CategoryId
+      },{
+        where: {
+          id: +req.params.courseId
+        }
+      }).then(result => {
+        res.redirect('/home')
+      })
+      .catch(err => {
+        if(err.name == 'SequelizeValidationError'){
+          let msg = err.errors.map(error => {
+            return error.message
+          }).join(';');
+          res.redirect(`/course/${req.params.courseId}/edit?err=${msg}`);
+        }else{
+          res.send(err);
+        }
+      })
+    }
+
     static deleteCourse(req, res) {
       Course.destroy({
         where: {
@@ -328,7 +398,6 @@ class Controller {
         res.send(err)
       })
     }
-    
 }
 
 module.exports = Controller

@@ -9,7 +9,9 @@
 <body>
     <%- include('./partials/navbar', {session:session}) %> 
     <h1>Select course you want</h1>
-    <h4>Your money: <%= money %></h4>
+    <% if (money) { %>
+        <h4>Your money: <%= money %></h4>
+    <% } %>
     <% if (session.role == '1') { %>
         <a href="/create_course">Add Course</a>
     <% } else if (session.role == '2') { %>
@@ -38,11 +40,10 @@
                     <td><%= el.getCurrency() %></td>
                     <td><%= el.filePath %></td>
                     <td>
-                        <% if (session.role == '2') { %>
-                            <a href="">Buy</a>
-                        <% } %>
                         <a href="/course/<%= el.id %>">Read Detail</a>
-                        <a href="/course/<%= el.id %>/delete">Delete Course</a>
+                        <% if (session.role == '1') { %>
+                            <a href="/course/<%= el.id %>/delete">Delete Course</a>
+                        <% } %>
                     </td>
                 </tr>
             <% }) %>
