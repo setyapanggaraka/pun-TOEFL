@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Student.hasMany(models.Course);
+      Student.belongsTo(models.User);
     }
     
     getWallet(){
@@ -34,14 +35,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     wallet: DataTypes.STRING,
     UserId: DataTypes.INTEGER
-    // TeacherId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Student',
   });
 
   Student.beforeCreate((student,options)=>{
-    student.wallet = 0;
+    student.wallet = 1000000;
   });
   return Student;
 };

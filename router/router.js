@@ -9,7 +9,7 @@ router.get('/login', Controller.getLoginPage)
 router.post('/login', Controller.postLogin)
 
 router.use((req,res,next)=>{
-    if(!req.session.user){
+    if(!req.session.userId){
         const err = 'Please Login First!'
         res.redirect(`/login?err=${err}`)
     }else{
@@ -27,6 +27,6 @@ router.post('/create_course', Controller.createCourse)
 router.get('/create_course', Controller.updateCourse)
 router.post('/create_course', Controller.createUpdateCourse)
 router.get('/course/:courseId/delete', Controller.deleteCourse)
-router.post('/logout', Controller.Logout)
+router.get('/logout', Controller.Logout)
 
 module.exports = router

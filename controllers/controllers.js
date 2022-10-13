@@ -2,6 +2,7 @@ const { sequelize, Course, Category, Role, User, Teacher, Student } = require('.
 const {Op} = require('sequelize');
 const student = require('../models/student');
 const bcrypt = require('bcryptjs');
+const convertToCurrency = require('../helper/currency');
 
 class Controller {
     static landingPage(req, res){
@@ -77,15 +78,41 @@ class Controller {
 
     static postLogin(req,res){
       const{email, password,RoleId} = req.body;
-      User.findOne({
+      const options = {
         where:{email,RoleId},
-      })
+        include:[{
+          model:Role,
+          where:{
+            id:RoleId
+          }
+        }]
+      }
+      if(RoleId == 1){
+        options.include.push({model:Teacher})
+      }else if(RoleId == 2){
+        options.include.push({model:Student});
+      }
+      let globaluser;
+      User.findOne(options)
       .then(user =>{
-        if(user) {
-          const isValidPassword = bcrypt.compareSync(password,user.password);
+        globaluser = user
+        let promiseRole;
+        if(+RoleId == 1){
+          promiseRole = Teacher.findOne({where:{UserId:user.id}})
+        }else if(+RoleId == 2){
+          promiseRole = Student.findOne({where:{UserId:user.id}})
+        }
+        return promiseRole
+      })
+      .then(role =>{
+        if(globaluser) {
+          const isValidPassword = bcrypt.compareSync(password,globaluser.password);
           if(isValidPassword){
-            req.session.user = user.id
+            req.session.userId = globaluser.id
+            req.session.roleName = globaluser.Role.name
             req.session.role = RoleId
+            req.session.name = role.name;
+            console.log(req.session)
             return res.redirect('/home');
           }else{
             const msg = "Username / Password is Invalid"
@@ -97,12 +124,14 @@ class Controller {
         }
       })
       .catch(err => {
+        console.log(err);
         res.send(err)
       });
     }
 
     static home(req, res){
       const { search } = req.query
+      const session = req.session
       const options = {
         where: {}
       }
@@ -111,15 +140,26 @@ class Controller {
           name : {
               [Op.iLike]: `%${search}%` 
           }
+        }
       }
+      let promiseUser, wallet;
+      if(session.role == 2){
+        promiseUser = Student.findOne({
+          where:{
+            UserId:session.userId
+          }
+        })
       }
-      Course.findAll(options)
+      promiseUser.then(result =>{
+        wallet = result.wallet;
+        return Course.findAll(options)
+      })
       .then(courses => {
-        res.render('home', {courses})
+        let money = convertToCurrency(wallet);
+        res.render('home', {courses,session,money});
       })
       .catch(err => {
-        res.send(err)
-        console.log(err)
+        res.send(err);
       })
     }
 
@@ -152,7 +192,7 @@ class Controller {
           }
         ],
         where:{
-          StudentId:req.session.user
+          StudentId:req.session.userId
         }
       }
       if(Search){
@@ -162,7 +202,7 @@ class Controller {
       }
       Course.findAll(options)
       .then(courses=>{
-        res.render('myCourses',{courses});
+        res.render('myCourses',{courses,session:req.session});
       })
       .catch(err =>{
         res.send(err);
@@ -176,7 +216,7 @@ class Controller {
       })
       .then(course => {
         // res.send(course);
-        res.render('myCourse_detail', {course})
+        res.render('myCourse_detail', {course,session:req.session})
       })
       .catch(err => {
         res.send(err)
@@ -194,6 +234,7 @@ class Controller {
         res.send(err)
       })
     }
+
     static createCourse(req, res){
       Student.findByPk(req.body.TeacherId)
       .then(StudentId => {
@@ -218,7 +259,7 @@ class Controller {
     }
 
     static Logout(req,res){
-      req.session.Destroy(err=>{
+      req.session.destroy(err=>{
         if(err){
           res.send(err);
         }else{

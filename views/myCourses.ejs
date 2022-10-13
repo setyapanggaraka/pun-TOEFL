@@ -7,8 +7,8 @@
     <title>Display All Courses</title>
 </head>
 <body>
+    <%- include('./partials/navbar', {session:session}) %> 
     <h1>My Course</h1>
-
     <form action="/myCourse" method="get" style="margin: 10px 0">
         <input type="text" placeholder="Search" name="Search">
         <input type="submit" value="Find">
@@ -40,7 +40,6 @@
             <% }) %>
         </tbody>
     </table>
-    <h4>Your money: Rp. 150.000</h4>
     <!-- <embed src="https://repository.dinus.ac.id/docs/bkd/Modul-Basic_English_Grammar.pdf" width="800px" height="2100px" /> -->
 </body>
 </html>
