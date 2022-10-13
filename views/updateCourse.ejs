@@ -8,22 +8,22 @@
 </head>
 <body>
     <h1>Add New Course</h1>
-    <form action="/create_course" method="post">
+    <form action="/course/<%= course.id %>/edit" method="post">
         <div>
             <label for="">Name Course</label> <br>
-            <input type="text" name="nameCourse">
+            <input type="text" name="nameCourse" value="<%= course.name %>">
         </div><br>
         <div>
             <label for="">Description</label> <br>
-            <input type="text" name="descriptionCourse">
+            <input type="text" name="descriptionCourse" value="<%= course.description %>">
         </div><br>
         <div>
             <label for="">Duration</label><br>
-            <input type="number" name="durationCourse">
+            <input type="number" name="durationCourse" value="<%= course.duration %>">
         </div><br>
         <div>
             <label for="">Price</label><br>
-            <input type="number" name="priceCourse">
+            <input type="number" name="priceCourse" value="<%= course.price %>">
         </div><br>
         <div>
         <div>
@@ -35,15 +35,14 @@
             <select name="CategoryId" id="category">
                 <option value="" disabled selected>--Select--</option>
                 <% categories.forEach(el => { %>
-                    <option value="<%= el.id %>"><%= el.name %></option>
+                    <option value="<%= el.id %>" <%= el.name == course.Category.name ? 'selected' : '' %>><%= el.name %></option>
                 <% }) %>
             </select>
         </div><br>
         <div>
             <label for="">Teacher Id</label><br>
-            <input type="number" name="TeacherId" id="">
+            <input type="number" name="Teacherid" id="" value="<%= course.Category.id %>">
         </div><br>
-        <a href="/upload">Add file</a>
         <input type="submit" value="Submit">
     </form>
     
