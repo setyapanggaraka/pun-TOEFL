@@ -11,6 +11,7 @@ router.post('/create_course', Controller.createCourse)
 router.get('/course/:courseId/edit', Controller.updateCourse)
 router.post('/course/:courseId/edit', Controller.createUpdateCourse)
 router.get('/course/:courseId/delete', Controller.deleteCourse)
-// router.get('/course/upload', Controller.uploadCourse)
+router.post('/course/upload', Controller.uploadCourse)
+
 
 module.exports = router

@@ -92,7 +92,6 @@ class Controller {
       })
     } 
     static createUpdateCourse(req, res){
-      // console.log(req.params)
       Student.findByPk(req.body.TeacherId)
       .then(StudentId => {
         // res.send(req.body)
@@ -114,8 +113,8 @@ class Controller {
         })
       })
       .then(result => {
-        res.send(result)
-        // res.redirect('/home')
+        // res.send(result)
+        res.redirect('/home')
       })
       .catch(err => {
         console.log(err)
@@ -135,7 +134,9 @@ class Controller {
         res.send(err)
       })
     }
-    
+    static uploadCourse (req, res){
+      
+    }
 }
 
 module.exports = Controller

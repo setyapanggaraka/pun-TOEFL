@@ -41,6 +41,12 @@
         </tbody>
     </table>
     <h4>Your money: Rp. 150.000</h4>
-    <!-- <embed src="https://repository.dinus.ac.id/docs/bkd/Modul-Basic_English_Grammar.pdf" width="800px" height="2100px" /> -->
+    <form action="/uploads" enctype="multipart/form-data" method="post">
+        <div class="form-group">
+          <input type="file" class="form-control-file" name="uploaded_file">
+          <input type="text" class="form-control" placeholder="Number of speakers" name="nspeakers">
+          <input type="submit" value="Get me the stats!" class="btn btn-default">            
+        </div>
+      </form>
 </body>
 </html>
