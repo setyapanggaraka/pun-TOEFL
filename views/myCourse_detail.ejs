@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1><%= course.name %></h1>
+        <h2>By : <%= course.Teacher.name %> - <%= course.Category.name %></h2>
+        <a>Estimated Time : <%= course.getEstimatedTime() %></a>
+        <br>
+        <a><%= course.description %></a>
+    </div>
+    <div>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed varius cursus quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut id dui quis dolor dignissim vehicula. Aliquam tincidunt ante ac sapien volutpat pulvinar. Ut aliquet efficitur erat, eu rutrum enim ultrices ut. Suspendisse tellus quam, laoreet sed nisl in, interdum semper libero. Aenean venenatis massa ut aliquet suscipit. Nulla in augue a risus sagittis placerat. Nunc posuere hendrerit pharetra. Donec congue leo non nulla laoreet, sit amet consequat libero laoreet. Proin iaculis ipsum et felis vulputate tempor.
+            Mauris lacus augue, rhoncus id tincidunt ac, blandit tempor ipsum. Etiam efficitur purus vel arcu condimentum tincidunt. Nullam eget nulla sem. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam laoreet, urna sit amet laoreet condimentum, leo nisl gravida massa, non congue arcu sem sed enim. Suspendisse nunc dolor, sodales eu turpis ut, luctus auctor augue. Maecenas faucibus velit eget turpis consectetur gravida. Mauris at luctus nulla. Integer semper justo sit amet dapibus volutpat. Cras luctus, tellus ac sagittis tristique, turpis massa condimentum dolor, sit amet fringilla urna est quis erat. 
+        </p>
+    </div>
+    <div>
+        <a>Silahkan download File Dibawah</a><br>
+        <a><%= course.filePath %></a>
+    </div>
+</body>
+</html>

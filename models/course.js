@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+const convertToCurrency = require('../helper/currency');
+const estimatedTime = require('../helper/estimatedTime');
+const formattedDate = require('../helper/time');
 module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
     /**
@@ -12,6 +15,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Course.belongsTo(models.Category);
+      Course.belongsTo(models.Student);
+      Course.belongsTo(models.Teacher);
+    }
+    
+    getEstimatedTime(){
+      return estimatedTime(this.duration);
+    }
+
+    getFormattedDate(){
+      return formattedDate(this.createdAt);
+    }
+
+    getCurrency(){
+      return convertToCurrency(this.price);
     }
   }
   Course.init({
@@ -20,8 +37,10 @@ module.exports = (sequelize, DataTypes) => {
     duration: DataTypes.INTEGER,
     price: DataTypes.INTEGER,
     filePath: DataTypes.STRING,
+    createdAt: DataTypes.DATE,
     CategoryId: DataTypes.INTEGER,
-    StudentId: DataTypes.INTEGER
+    StudentId: DataTypes.INTEGER,
+    TeacherId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Course',

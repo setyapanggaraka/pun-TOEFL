@@ -1,4 +1,5 @@
 const { sequelize, Course, Category, Role, User, Teacher, Student } = require('../models');
+const {Op} = require('sequelize');
 const student = require('../models/student');
 const bcrypt = require('bcryptjs');
 
@@ -101,35 +102,75 @@ class Controller {
     }
 
     static home(req, res){
-        // res.send('home')
         Course.findAll()
         .then(courses => {
-          // res.send(courses)
           res.render('home', {courses})
         })
         .catch(err => {
           res.send(err)
         })
     }
+
     static selectCourse(req, res){
-      // Course.findByPk(req.params.courseId)
-      console.log(req.params.courseId)
       Course.findByPk(+req.params.courseId, {
-        include: Category
-        
+        include: Category 
       })
       .then(course => {
-        // res.send(course)
-        console.log(course)
         res.render('selectCourse', {course})
       })
       .catch(err => {
         res.send(err)
       })
     }
+
     static buyCourse(){
 
     }
+
+    static getMyCourse(req,res){
+      const {Search} = req.query
+      let options = {
+        include:[
+          {
+            model: Category,
+            attributes: ['name']
+          },{
+            model: Teacher,
+            attributes: ['name']
+          }
+        ],
+        where:{
+          StudentId:req.session.user
+        }
+      }
+      if(Search){
+        options.where.name = {
+          [Op.iLike]: `%${Search}%`
+        }
+      }
+      Course.findAll(options)
+      .then(courses=>{
+        res.render('myCourses',{courses});
+      })
+      .catch(err =>{
+        res.send(err);
+      })
+    }
+
+    static getMyCourseDetail(req,res){
+      const {courseId} = req.params
+      Course.findByPk(courseId, {
+        include: [Category,Teacher] 
+      })
+      .then(course => {
+        // res.send(course);
+        res.render('myCourse_detail', {course})
+      })
+      .catch(err => {
+        res.send(err)
+      })
+    }
+
     static createCourse(req, res){
       Category.findAll({
           attributes: ['id','name','description']
@@ -165,7 +206,7 @@ class Controller {
         res.send(err)
       })
     }
-    
+
     static Logout(req,res){
       req.session.Destroy(err=>{
         if(err){

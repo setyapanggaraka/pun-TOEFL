@@ -19,7 +19,7 @@ module.exports = {
     el.createdAt = el.updatedAt = new Date()
     return el
    })
-  //  return queryInterface.bulkInsert('Categories', insertCategory, {});
+   return queryInterface.bulkInsert('Categories', insertCategory, {});
   },
 
   async down (queryInterface, Sequelize) {
