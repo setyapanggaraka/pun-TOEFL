@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     price: DataTypes.INTEGER,
     filePath: DataTypes.STRING,
     CategoryId: DataTypes.INTEGER,
-    UserId: DataTypes.INTEGER
+    StudentId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Course',
