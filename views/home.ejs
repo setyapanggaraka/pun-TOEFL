@@ -4,9 +4,42 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Display All Courses</title>
 </head>
 <body>
-    Home
+    <h1>Select course you want</h1>
+
+    <form action="" method="get" style="margin: 10px 0">
+        <input type="text" placeholder="search" name="search">
+        <input type="submit" value="submit">
+    </form>
+
+    <table border="1 px">
+        <thead>
+            <th>name</th>
+            <th>description</th>
+            <th>duration</th>
+            <th>price</th>
+            <th>filePath</th>
+            <th>Action</th>
+        </thead>
+        <tbody>
+            <% courses.forEach(el => { %>
+                <tr>
+                    <td><%= el.name %></td>
+                    <td><%= el.description %></td>
+                    <td><%= el.duration %></td>
+                    <td><%= el.price %></td>
+                    <td><%= el.filePath %></td>
+                    <td>
+                        <a href="">Buy</a>
+                        <a href="/course/<%= el.id %>">Read Detail</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <h4>Your money: Rp. 150.000</h4>
+    <!-- <embed src="https://repository.dinus.ac.id/docs/bkd/Modul-Basic_English_Grammar.pdf" width="800px" height="2100px" /> -->
 </body>
 </html>
