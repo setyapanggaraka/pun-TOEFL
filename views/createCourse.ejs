@@ -7,34 +7,44 @@
     <title>Add New Course</title>
 </head>
 <body>
-    <center>
-        <h1>Add New Course</h1>
-    </center>
+    <h1>Add New Course</h1>
     <form action="/create_course" method="post">
-
         <div>
             <label for="">Name Course</label> <br>
             <input type="text" name="nameCourse">
         </div><br>
         <div>
             <label for="">Description</label> <br>
-            <input type="text" name="descCourse">
-        </div>
+            <input type="text" name="descriptionCourse">
+        </div><br>
         <div>
             <label for="">Duration</label><br>
-            <input type="text" name="durationCourse">
-        </div>
+            <input type="number" name="durationCourse">
+        </div><br>
         <div>
-            <label for="">filePath</label><br>
-            <input type="text" name="filePath">
-        </div>
+            <label for="">Price</label><br>
+            <input type="number" name="priceCourse">
+        </div><br>
         <div>
-            <label for="">CategoryId</label><br>
-            <input type="text" name="category">
-        </div>
         <div>
-            <label for="">UserId</label><br>
-        </div>
+            <label for="">File Path</label><br>
+            <input type="file" id="myFile" name="filename">
+        </div><br>
+        <div>
+            <label for="">Category</label><br>
+            <select name="CategoryId" id="category">
+                <option value="" disabled selected>--Select--</option>
+                <% categories.forEach(el => { %>
+                    <option value="<%= el.id %>"><%= el.name %></option>
+                <% }) %>
+            </select>
+        </div><br>
+        <div>
+            <label for="">Teacher Id</label><br>
+            <input type="number" name="TeacherId" id="">
+        </div><br>
+        <input type="submit" value="Submit">
     </form>
+    
 </body>
 </html>
