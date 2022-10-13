@@ -1,30 +1,37 @@
 const { Student, Course, Category, User } = require('../models')
+const { search } = require('../router/router')
+const { Op } = require('sequelize')
 
 class Controller {
     static landingPage(req, res){
         res.render('landingPage')
     }
     static home(req, res){
-        // res.send('home')
-        Course.findAll()
-        .then(courses => {
-          // res.send(courses)
-          res.render('home', {courses})
-        })
-        .catch(err => {
-          res.send(err)
-        })
+      const { search } = req.query
+      const options = {
+        where: {}
+      }
+      if (search){
+        options.where = {
+          name : {
+              [Op.iLike]: `%${search}%` 
+          }
+      }
+      }
+      Course.findAll(options)
+      .then(courses => {
+        res.render('home', {courses})
+      })
+      .catch(err => {
+        res.send(err)
+        console.log(err)
+      })
     }
     static selectCourse(req, res){
-      // Course.findByPk(req.params.courseId)
-      console.log(req.params.courseId)
       Course.findByPk(+req.params.courseId, {
         include: Category
-        
       })
       .then(course => {
-        // res.send(course)
-        console.log(course)
         res.render('selectCourse', {course})
       })
       .catch(err => {
@@ -34,9 +41,9 @@ class Controller {
     static buyCourse(){
 
     }
-    static createCourse(req, res){
+    static addCourse(req, res){
       Category.findAll({
-          attributes: ['id','name','description']
+        attributes: ['id','name','description']
       })
       .then(categories => {
         res.render('createCourse', {categories})
@@ -45,21 +52,19 @@ class Controller {
         res.send(err)
       })
     }
-    static updateCourse(req, res){
-      Student.findOne({
-        attributes: ['id']
-      })
+    static createCourse(req, res){
+      Student.findByPk(req.body.TeacherId)
       .then(StudentId => {
         const { nameCourse, descriptionCourse, durationCourse, priceCourse, filename, CategoryId } = req.body
-        // Course.create({
-        //   name: nameCourse,
-        //   description: descriptionCourse,
-        //   duration: durationCourse,
-        //   price: priceCourse, 
-        //   filePath: filename,
-        //   StudentId: StudentId.id,
-        //   CategoryId: CategoryId,
-        // })
+        return Course.create({
+          name: nameCourse,
+          description: descriptionCourse,
+          duration: durationCourse,
+          price: priceCourse, 
+          filePath: filename,
+          StudentId: StudentId.id,
+          CategoryId: CategoryId,
+        })
       })
       .then(() => {
         res.redirect('/home')
@@ -68,7 +73,16 @@ class Controller {
         console.log(err)
         res.send(err)
       })
+    }
+    static updateCourse(req, res){
+      
     } 
+    static createUpdateCourse(req, res){
+
+    }
+    static deleteCourse(req, res) {
+
+    }
 }
 
 module.exports = Controller

@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Course.belongsTo(models.Category);
+      Course.belongsTo(models.Student);
+      Course.belongsTo(models.Teacher);
     }
   }
   Course.init({
@@ -21,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     price: DataTypes.INTEGER,
     filePath: DataTypes.STRING,
     CategoryId: DataTypes.INTEGER,
-    StudentId: DataTypes.INTEGER
+    StudentId: DataTypes.INTEGER,
+    TeacherId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Course',
