@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     wallet: DataTypes.STRING,
     UserId: DataTypes.INTEGER
+    // TeacherId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Student',

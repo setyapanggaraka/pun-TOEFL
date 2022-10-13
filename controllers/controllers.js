@@ -102,13 +102,25 @@ class Controller {
     }
 
     static home(req, res){
-        Course.findAll()
-        .then(courses => {
-          res.render('home', {courses})
-        })
-        .catch(err => {
-          res.send(err)
-        })
+      const { search } = req.query
+      const options = {
+        where: {}
+      }
+      if (search){
+        options.where = {
+          name : {
+              [Op.iLike]: `%${search}%` 
+          }
+      }
+      }
+      Course.findAll(options)
+      .then(courses => {
+        res.render('home', {courses})
+      })
+      .catch(err => {
+        res.send(err)
+        console.log(err)
+      })
     }
 
     static selectCourse(req, res){
@@ -171,9 +183,9 @@ class Controller {
       })
     }
 
-    static createCourse(req, res){
+    static addCourse(req, res){
       Category.findAll({
-          attributes: ['id','name','description']
+        attributes: ['id','name','description']
       })
       .then(categories => {
         res.render('createCourse', {categories})
@@ -182,21 +194,19 @@ class Controller {
         res.send(err)
       })
     }
-    static updateCourse(req, res){
-      Student.findOne({
-        attributes: ['id']
-      })
+    static createCourse(req, res){
+      Student.findByPk(req.body.TeacherId)
       .then(StudentId => {
         const { nameCourse, descriptionCourse, durationCourse, priceCourse, filename, CategoryId } = req.body
-        // Course.create({
-        //   name: nameCourse,
-        //   description: descriptionCourse,
-        //   duration: durationCourse,
-        //   price: priceCourse, 
-        //   filePath: filename,
-        //   StudentId: StudentId.id,
-        //   CategoryId: CategoryId,
-        // })
+        return Course.create({
+          name: nameCourse,
+          description: descriptionCourse,
+          duration: durationCourse,
+          price: priceCourse, 
+          filePath: filename,
+          StudentId: StudentId.id,
+          CategoryId: CategoryId,
+        })
       })
       .then(() => {
         res.redirect('/home')
@@ -215,7 +225,16 @@ class Controller {
           res.redirect('/login');
         }
       })
+    }
+    static updateCourse(req, res){
+      
     } 
+    static createUpdateCourse(req, res){
+
+    }
+    static deleteCourse(req, res) {
+
+    }
 }
 
 module.exports = Controller
