@@ -4,15 +4,15 @@
 module.exports = {
   up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('Users',[{
-      "email": "bbillie0@unesco.org",
-      "password": "if95bEzSnam",
+      "email": "admin@admin.com",
+      "password": "$2a$15$l2ZjCi7LP2jo3rLVS/ufk.9uXyB5BgR2WjJt2DkUBWLvwDaZzerMO",
       "RoleId": 1,
       "createdAt": new Date(),
       "updatedAt": new Date()
     }, {
-      "email": "wvasyunkin1@dropbox.com",
-      "password": "innS6plfxV",
-      "RoleId": 1,
+      "email": "admin2@admin.com",
+      "password": "$2a$15$l2ZjCi7LP2jo3rLVS/ufk.9uXyB5BgR2WjJt2DkUBWLvwDaZzerMO",
+      "RoleId": 2,
       "createdAt": new Date(),
       "updatedAt": new Date()
     }, {
