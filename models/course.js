@@ -72,7 +72,18 @@ module.exports = (sequelize, DataTypes) => {
     price: DataTypes.INTEGER,
     filePath: DataTypes.STRING,
     createdAt: DataTypes.DATE,
-    CategoryId: DataTypes.INTEGER,
+    CategoryId: {
+      type: DataTypes.STRING,
+        allowNull:false,
+        validate:{
+          notNull:{
+            msg: 'Category must be filled'
+          },
+          notEmpty:{
+            msg: 'Category must be filled'
+          },
+        }
+    },
     StudentId: DataTypes.INTEGER,
     TeacherId: DataTypes.INTEGER
   }, {

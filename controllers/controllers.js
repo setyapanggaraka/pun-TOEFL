@@ -111,6 +111,7 @@ class Controller {
           if(isValidPassword){
             req.session.userId = globaluser.id
             req.session.roleName = globaluser.Role.name
+            req.session.idRole = role.id;
             req.session.role = RoleId
             req.session.name = role.name;
             return res.redirect('/home');
@@ -131,10 +132,15 @@ class Controller {
     static home(req, res){
       const { search } = req.query
       const session = req.session
-      const options = {
-        where: {
-          StudentId:{
-            [Op.ne]: session.userId
+      let options ={}
+      if(req.session.role == 1){
+        options = {}
+      }else{
+        options = {
+          where: {
+            StudentId:{
+              [Op.ne]: session.userId
+            }
           }
         }
       }
@@ -186,6 +192,7 @@ class Controller {
         ]
       })
       .then(course => {
+        console.log(course);
         res.render('selectCourse', {course,session:req.session})
       })
       .catch(err => {
@@ -208,11 +215,11 @@ class Controller {
       .then(course =>{
         let coursePrice = course.price
         let remaining;
-        console.log(coursePrice, +studentWallet)
         if(coursePrice > +studentWallet){
           throw new Error("Uang Kurang")
         }else{
           remaining = studentWallet - coursePrice
+          console.log(remaining);
         }
         return Student.update({
           wallet:remaining
@@ -223,7 +230,7 @@ class Controller {
       })
       .then(result=>{
         return Course.update({
-          StudentId:req.session.userId
+          StudentId:req.session.idRole
         },{
           where: {
             id: courseId
@@ -234,7 +241,6 @@ class Controller {
         res.redirect('/myCourse')
       })
       .catch(err=>{
-        console.log(err);
         res.send(err)
       })
     }
@@ -252,7 +258,7 @@ class Controller {
           }
         ],
         where:{
-          StudentId:req.session.userId
+          StudentId:req.session.idRole
         }
       }
       if(Search){
@@ -301,14 +307,21 @@ class Controller {
 
     static createCourse(req, res){
       const {nameCourse, descriptionCourse, durationCourse, priceCourse, filename, CategoryId } = req.body
-      Course.create({
-        name: nameCourse,
-        description: descriptionCourse,
-        duration: durationCourse,
-        price: priceCourse, 
-        filePath: filename,
-        TeacherId: req.session.userId,
-        CategoryId: CategoryId,
+      Teacher.findOne({
+        where:{
+          UserId: req.session.userId,
+        }
+      })
+      .then(teacher =>{
+        Course.create({
+          name: nameCourse,
+          description: descriptionCourse,
+          duration: durationCourse,
+          price: priceCourse, 
+          filePath: filename,
+          TeacherId: teacher.id,
+          CategoryId: CategoryId,
+        })
       })
       .then(() => {
         res.redirect('/home')
